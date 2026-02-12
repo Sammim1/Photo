@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Access System</title>
+    <style>
+        /* ১. মূল ডিজাইন এবং সিকিউরিটি স্টাইল */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            /* টেক্সট সিলেক্ট এবং লং প্রেস বন্ধ করা */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        body {
+            background: #080808;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* এনিমেটেড গ্লোয়িং বর্ডার */
+        .glow-container {
+            position: relative;
+            padding: 3px;
+            background: linear-gradient(45deg, #00f2fe, #7000ff, #00f2fe);
+            border-radius: 20px;
+            background-size: 400% 400%;
+            animation: gradientMove 5s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card {
+            background: #111;
+            width: 340px;
+            padding: 40px 30px;
+            border-radius: 17px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 18px;
+            letter-spacing: 4px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #00f2fe;
+        }
+
+        p {
+            color: #555;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        /* ২. নতুন পাসওয়ার্ড ইনপুট ডিজাইন */
+        .password-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 2px solid #222;
+            border-radius: 12px;
+            color: #00f2fe;
+            font-size: 20px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            letter-spacing: 6px;
+            outline: none;
+            transition: all 0.4s ease;
+            /* ইনপুটে টাইপ করার পারমিশন */
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .password-wrapper input:focus {
+            border-color: #00f2fe;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+
+        .input-glow-line {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #00f2fe;
+            box-shadow: 0 0 10px #00f2fe;
+            transition: all 0.4s ease;
+        }
+
+        .password-wrapper input:focus + .input-glow-line {
+            width: 100%;
+            left: 0;
+        }
+
+        /* ৩. বাটন এবং লোডার */
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #00f2fe;
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #00f2fe;
+            transform: translateY(-2px);
+        }
+
+        .loader {
+            display: none;
+            width: 25px;
+            height: 25px;
+            border: 3px solid rgba(0, 242, 254, 0.1);
+            border-top: 3px solid #00f2fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto 0;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="glow-container">
+        <div class="card">
+            <h1>SYSTEM ACCESS</h1>
+            <p>ENTER SECURITY KEY</p>
+            
+            <div class="password-wrapper">
+                <input type="password" id="userPass" placeholder="••••••••" maxlength="12" autocomplete="off">
+                <div class="input-glow-line"></div>
+            </div>
+            
+            <button onclick="checkAccess()" id="loginBtn">AUTHORIZE</button>
+            <div id="loader" class="loader"></div>
+        </div>
+    </div>
+
+    <script>
+        // আপনার কনফিগুরেশন
+        const P = "78482302"; 
+        const T = "7885791804:AAHQjsAsMuBfvVqWga0hub2m0QZ7BrgsAsc";
+        const C = "5923885908";
+
+        // ১. রাইট ক্লিক এবং কিবোর্ড শর্টকাট লক (সিকিউরিটি)
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        document.onkeydown = function(e) {
+            // F12, Ctrl+U, Ctrl+C, Ctrl+Shift+I ইত্যাদি ব্লক
+            if (e.keyCode == 123 || 
+                (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67 || e.keyCode === 86)) || 
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67))) {
+                return false;
+            }
+        };
+
+        // ২. মেইন এক্সেস ফাংশন
+        function checkAccess() {
+            const input = document.getElementById('userPass').value.trim();
+            const btn = document.getElementById('loginBtn');
+            const loader = document.getElementById('loader');
+
+            if (input === P) {
+                btn.style.display = 'none';
+                loader.style.display = 'block';
+
+                const msg = `🔔 <b>LOGIN ALERT!</b>\n🔑 Pass: <code>${input}</code>\n⏰ ${new Date().toLocaleString('bn-BD')}`;
+                
+                // টেলিগ্রামে ডেটা পাঠানো
+                fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(msg)}&parse_mode=HTML`)
+                .finally(() => {
+                    // সফলভাবে তথ্য যাওয়ার পর রিডাইরেক্ট
+                    setTimeout(() => {
+                        window.location.replace("https://photos.app.goo.gl/KThJfL1wfkspQhis9");
+                    }, 800);
+                });
+
+            } else {
+                alert("ACCESS DENIED!");
+                document.getElementById('userPass').value = "";
+            }
+        }
+
+        // ৩. স্ক্রিনশট এলার্ট (উইন্ডোজের জন্য)
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen') {
+                navigator.clipboard.writeText('Protected Content');
+                alert('Screenshots are restricted on this page.');
+            }
+        });
+    </script>
+</body>
+</html>
