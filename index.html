@@ -8,19 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background: #02040a; color: #ffffff; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
-        .gx-title { font-family: 'Syncopate', sans-serif; letter-spacing: 5px; background: linear-gradient(to right, #00f2fe 0%, #4facfe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #mainTitle { font-family: 'Syncopate', sans-serif; letter-spacing: 5px; background: linear-gradient(to right, #00f2fe 0%, #4facfe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: 0.5s; }
         .premium-card { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 35px; box-shadow: 0 0 50px rgba(0, 0, 0, 0.8); }
         .mode-btn { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .mode-btn.active { background: linear-gradient(45deg, #00c6ff, #0072ff); border: none; box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3); }
+        .mode-btn.active { background: linear-gradient(45deg, #00c6ff, #0072ff); border: none; box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3); color: white !important; }
         .upload-area { border: 2px dashed rgba(255, 255, 255, 0.1); transition: 0.3s; }
         .upload-area:hover { border-color: #00c6ff; background: rgba(0, 198, 255, 0.05); }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="premium-card p-10 w-full max-w-2xl text-center">
-        <h1 class="text-4xl font-extrabold gx-title mb-2">GX REMOVE</h1>
-        <p class="text-slate-500 text-[10px] tracking-[4px] uppercase mb-10">Premium AI Photo Generation</p>
+    <div class="premium-card p-10 w-full max-w-2xl text-center border-t border-blue-500/20">
+        <h1 id="mainTitle" class="text-4xl font-extrabold mb-2">GX REMOVE</h1>
+        <p id="subTitle" class="text-slate-500 text-[10px] tracking-[4px] uppercase mb-10">Premium AI Photo Generation</p>
 
         <div class="flex gap-4 mb-8 bg-black/40 p-2 rounded-2xl">
             <button id="bgMode" onclick="setMode('bg')" class="mode-btn active flex-1 py-3 rounded-xl font-bold text-sm">Remove BG</button>
@@ -29,10 +29,10 @@
 
         <div id="uploadBox" class="upload-area relative rounded-[30px] p-16 cursor-pointer mb-6">
             <input type="file" id="imageInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
-            <div id="dropText" class="space-y-4">
-                <div class="text-5xl text-blue-500">✦</div>
-                <p class="text-slate-300 font-semibold">ফটো এখানে আপলোড করুন</p>
-                <p class="text-slate-500 text-xs">High Quality HD Processing</p>
+            <div id="dropContent" class="space-y-4">
+                <div id="modeIcon" class="text-5xl text-blue-500">✦</div>
+                <p id="modeText" class="text-slate-300 font-semibold">ফটো এখানে আপলোড করুন</p>
+                <p class="text-slate-500 text-xs tracking-widest">ULTRA HD PROCESSING</p>
             </div>
         </div>
 
@@ -42,16 +42,13 @@
         </div>
 
         <div id="resultArea" class="hidden space-y-6">
-            <div class="relative group rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-                <img id="outputImg" class="w-full h-auto" src="">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                    <p class="text-xs text-blue-300">HD Quality Generated</p>
-                </div>
+            <div class="relative group rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-zinc-900">
+                <img id="outputImg" class="w-full h-auto min-h-[200px]" src="" crossorigin="anonymous">
             </div>
             
             <div class="flex gap-4">
                 <button onclick="location.reload()" class="flex-1 bg-slate-900 border border-white/5 py-4 rounded-2xl font-bold text-sm hover:bg-slate-800 transition">নতুন ফটো</button>
-                <a id="downloadBtn" href="#" download="GX_Remove_HD.png" class="flex-1 bg-blue-600 py-4 rounded-2xl font-bold text-sm shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition text-center">HD ডাউনলোড</a>
+                <button onclick="downloadImage()" class="flex-1 bg-blue-600 py-4 rounded-2xl font-bold text-sm shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition">HD ডাউনলোড</button>
             </div>
         </div>
     </div>
@@ -63,9 +60,25 @@
 
         function setMode(mode) {
             currentMode = mode;
-            document.getElementById('bgMode').className = mode === 'bg' ? 'mode-btn active flex-1 py-3 rounded-xl font-bold text-sm' : 'mode-btn flex-1 py-3 rounded-xl font-bold text-sm text-slate-400';
-            document.getElementById('enhanceMode').className = mode === 'enhance' ? 'mode-btn active flex-1 py-3 rounded-xl font-bold text-sm' : 'mode-btn flex-1 py-3 rounded-xl font-bold text-sm text-slate-400';
-            document.getElementById('dropText').innerHTML = mode === 'bg' ? '<div class="text-5xl text-blue-500">✦</div><p class="text-slate-300 font-semibold">ব্যাকগ্রাউন্ড রিমুভ করতে আপলোড দিন</p>' : '<div class="text-5xl text-purple-500">✨</div><p class="text-slate-300 font-semibold">ফটো ইনহ্যান্স করতে আপলোড দিন</p>';
+            const title = document.getElementById('mainTitle');
+            const bgBtn = document.getElementById('bgMode');
+            const enBtn = document.getElementById('enhanceMode');
+            
+            if(mode === 'bg') {
+                title.innerText = "GX REMOVE";
+                bgBtn.classList.add('active');
+                enBtn.classList.remove('active');
+                document.getElementById('modeIcon').innerText = "✦";
+                document.getElementById('modeIcon').className = "text-5xl text-blue-500";
+                document.getElementById('modeText').innerText = "ব্যাকগ্রাউন্ড রিমুভ করতে আপলোড দিন";
+            } else {
+                title.innerText = "GX ENHANCE";
+                enBtn.classList.add('active');
+                bgBtn.classList.remove('active');
+                document.getElementById('modeIcon').innerText = "✨";
+                document.getElementById('modeIcon').className = "text-5xl text-purple-500";
+                document.getElementById('modeText').innerText = "ফটো ইনহ্যান্স করতে আপলোড দিন";
+            }
         }
 
         document.getElementById('imageInput').onchange = async (e) => {
@@ -73,39 +86,62 @@
             if (!file) return;
 
             toggleUI('loading');
-
             const formData = new FormData();
             
-            if (currentMode === 'bg') {
-                formData.append('image_file', file);
-                formData.append('size', 'auto'); // HD quality
-                await processRequest('https://api.remove.bg/v1.0/removebg', { 'X-Api-Key': BG_KEY }, formData, 'blob');
-            } else {
-                formData.append('image', file);
-                await processRequest('https://api.deepai.org/api/waifu2x', { 'api-key': ENHANCE_KEY }, formData, 'json');
-            }
-        };
-
-        async function processRequest(url, headers, body, type) {
             try {
-                const res = await fetch(url, { method: 'POST', headers, body });
-                if (type === 'blob') {
+                if (currentMode === 'bg') {
+                    formData.append('image_file', file);
+                    formData.append('size', 'auto');
+                    const res = await fetch('https://api.remove.bg/v1.0/removebg', { 
+                        method: 'POST', 
+                        headers: { 'X-Api-Key': BG_KEY }, 
+                        body: formData 
+                    });
                     const blob = await res.blob();
                     showResult(URL.createObjectURL(blob));
                 } else {
+                    formData.append('image', file);
+                    const res = await fetch('https://api.deepai.org/api/waifu2x', { 
+                        method: 'POST', 
+                        headers: { 'api-key': ENHANCE_KEY }, 
+                        body: formData 
+                    });
                     const data = await res.json();
-                    showResult(data.output_url);
+                    if(data.output_url) {
+                        showResult(data.output_url);
+                    } else {
+                        throw new Error("API Limit Reached");
+                    }
                 }
             } catch (err) {
-                alert("প্রসেসিং ব্যর্থ হয়েছে! ক্রেডিট বা কানেকশন চেক করুন।");
+                alert("প্রসেসিং ব্যর্থ হয়েছে! আপনার ক্রেডিট শেষ হয়ে থাকতে পারে।");
                 location.reload();
             }
-        }
+        };
 
         function showResult(url) {
-            document.getElementById('outputImg').src = url;
-            document.getElementById('downloadBtn').href = url;
+            const img = document.getElementById('outputImg');
+            img.src = url;
             toggleUI('result');
+        }
+
+        async function downloadImage() {
+            const imgUrl = document.getElementById('outputImg').src;
+            try {
+                const response = await fetch(imgUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GX_${currentMode === 'bg' ? 'Remove' : 'Enhance'}_HD.png`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (err) {
+                // সরাসরি লিঙ্ক ওপেন করার ব্যাকআপ
+                window.open(imgUrl, '_blank');
+            }
         }
 
         function toggleUI(state) {
