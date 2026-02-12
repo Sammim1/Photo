@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GX REMOVE | AI Studio</title>
+    <title>GX REMOVE | AI Background Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -20,7 +20,7 @@
         }
         .gx-wrapper {
             width: 100%;
-            max-width: 400px; /* একদম পারফেক্ট স্মার্টফোন সাইজ মাপ */
+            max-width: 400px; /* প্রিমিয়াম লম্বাটে সাইজ */
             background: #0d1117;
             border: 1px solid #30363d;
             border-radius: 45px;
@@ -47,23 +47,6 @@
         }
         .upload-zone:hover { border-color: #58a6ff; background: #1c2128; }
         
-        /* Background Selector */
-        .color-palette {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .color-btn {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid #30363d;
-            transition: 0.2s;
-        }
-        .color-btn:hover { transform: scale(1.1); border-color: #fff; }
-
         .btn-action {
             background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             color: #000;
@@ -74,10 +57,22 @@
             text-transform: uppercase;
             font-size: 12px;
             letter-spacing: 1px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        .btn-outline {
+            background: #161b22;
+            color: #4facfe;
+            border: 1px solid #30363d;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 18px;
+            width: 100%;
+            font-size: 11px;
             margin-top: 10px;
+            cursor: pointer;
         }
         #previewContainer {
-            background: #ffffff; /* Default ID photo background */
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 20px;
@@ -86,8 +81,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #222;
         }
-        #outputImg { max-width: 100%; display: block; }
+        #outputImg { max-width: 100%; display: block; position: relative; z-index: 2; }
     </style>
 </head>
 <body>
@@ -95,21 +93,19 @@
     <div class="gx-wrapper">
         <div class="gx-header">
             <h1>GX REMOVE</h1>
-            <p class="text-[8px] text-gray-500 tracking-[4px] mt-1 font-bold">PREMIUM AI STUDIO</p>
+            <p class="text-[8px] text-gray-500 tracking-[4px] mt-1 font-bold uppercase">Pro Background Studio</p>
         </div>
-
-        <div id="statusTag" class="mt-4 text-[10px] text-blue-400 font-bold uppercase tracking-widest">Ready to Process</div>
 
         <div id="uploadBox" class="upload-zone" onclick="document.getElementById('imageInput').click()">
             <input type="file" id="imageInput" class="hidden" accept="image/*">
-            <div class="text-4xl mb-3">📸</div>
+            <div class="text-4xl mb-3">🖼️</div>
             <p class="text-sm font-bold text-gray-300">Upload Photo</p>
-            <p class="text-[9px] text-gray-600 mt-1 uppercase">Supports HD PNG</p>
+            <p class="text-[9px] text-gray-600 mt-1 uppercase">Background will be removed</p>
         </div>
 
         <div id="loader" class="hidden py-10">
             <div class="w-10 h-10 border-4 border-gray-800 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
-            <p class="text-[10px] text-blue-400 mt-4 font-bold tracking-widest">AI PROCESSING...</p>
+            <p class="text-[10px] text-blue-400 mt-4 font-bold tracking-widest uppercase">AI Removing BG...</p>
         </div>
 
         <div id="resultArea" class="hidden">
@@ -117,28 +113,32 @@
                 <img id="outputImg" src="">
             </div>
 
-            <p class="text-[10px] text-gray-500 font-bold mb-3 uppercase tracking-wider">Change Background Color</p>
-            <div class="color-palette">
-                <div class="color-btn" style="background: transparent;" onclick="changeBG('transparent')"></div> <div class="color-btn" style="background: #ffffff;" onclick="changeBG('#ffffff')"></div> <div class="color-btn" style="background: #3b82f6;" onclick="changeBG('#3b82f6')"></div> <div class="color-btn" style="background: #ef4444;" onclick="changeBG('#ef4444')"></div> </div>
+            <input type="file" id="bgInput" class="hidden" accept="image/*" onchange="applyCustomBG(event)">
+            
+            <button onclick="document.getElementById('bgInput').click()" class="btn-outline">
+                📷 Add Custom Background
+            </button>
 
-            <button onclick="downloadImage()" class="btn-action">Download HD</button>
-            <button onclick="location.reload()" class="text-[9px] text-gray-600 mt-4 font-bold uppercase tracking-widest hover:text-white transition cursor-pointer border-none bg-none">Upload Another</button>
+            <button onclick="downloadImage()" class="btn-action">Download Result</button>
+            
+            <button onclick="location.reload()" class="text-[9px] text-gray-600 mt-5 font-bold uppercase tracking-widest hover:text-white transition block mx-auto">
+                Upload New Photo
+            </button>
         </div>
 
-        <p class="mt-8 text-[7px] text-gray-700 tracking-[2px] font-bold">DEVELOPER SAMMIM © 2026</p>
+        <p class="mt-8 text-[7px] text-gray-700 tracking-[2px] font-bold uppercase">Developer Sammim © 2026</p>
     </div>
 
     <script>
         const API_KEY = "MMoS7GN2XD8zxXYw5s3ZZmHr";
-        let currentBlobUrl = "";
 
+        // ১. ছবি আপলোড ও ব্যাকগ্রাউন্ড রিমুভ
         document.getElementById('imageInput').onchange = async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
             document.getElementById('uploadBox').classList.add('hidden');
             document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('statusTag').innerText = "Removing Background...";
 
             const formData = new FormData();
             formData.append('image_file', file);
@@ -153,38 +153,42 @@
 
                 if (response.ok) {
                     const blob = await response.blob();
-                    currentBlobUrl = URL.createObjectURL(blob);
-                    document.getElementById('outputImg').src = currentBlobUrl;
+                    const url = URL.createObjectURL(blob);
+                    document.getElementById('outputImg').src = url;
                     document.getElementById('loader').classList.add('hidden');
                     document.getElementById('resultArea').classList.remove('hidden');
-                    document.getElementById('statusTag').innerText = "Success! Image Ready";
                 } else {
-                    alert("Credit Limit Reached!");
+                    alert("Credit finished or API Error!");
                     location.reload();
                 }
             } catch (err) {
-                alert("Check Internet Connection.");
+                alert("Network connection error.");
                 location.reload();
             }
         };
 
-        function changeBG(color) {
-            const container = document.getElementById('previewContainer');
-            if (color === 'transparent') {
-                container.style.background = "url('https://www.transparenttextures.com/patterns/carbon-fibre.png')"; // Checkerboard look
-            } else {
-                container.style.background = color;
+        // ২. গ্যালারি থেকে নতুন ব্যাকগ্রাউন্ড সেট করা
+        function applyCustomBG(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewContainer').style.backgroundImage = `url('${e.target.result}')`;
+                }
+                reader.readAsDataURL(file);
             }
         }
 
-        async function downloadImage() {
-            // এই ফাংশনটি এখন সরাসরি ব্যাকগ্রাউন্ডসহ ডাউনলোড করার চেষ্টা করবে
+        // ৩. ডাউনলোড (ব্যাকগ্রাউন্ডসহ ডাউনলোড করার সহজ পদ্ধতি)
+        function downloadImage() {
+            const imgUrl = document.getElementById('outputImg').src;
             const a = document.createElement('a');
-            a.href = document.getElementById('outputImg').src;
-            a.download = "GX_PRO_RESULT.png";
+            a.href = imgUrl;
+            a.download = "GX_PRO_EDIT.png";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            alert("নোট: গ্যালারি থেকে যুক্ত করা ব্যাকগ্রাউন্ডসহ সেভ করতে হলে ছবির ওপর লং প্রেস করে 'Download Image' দিন।");
         }
     </script>
 </body>
