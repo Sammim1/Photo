@@ -3,141 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GX REMOVE | AI Background Studio</title>
+    <title>GX REMOVE | Pro AI Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background: #020408; 
-            color: #ffffff; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .gx-wrapper {
-            width: 100%;
-            max-width: 400px; /* প্রিমিয়াম লম্বাটে সাইজ */
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 45px;
-            padding: 35px 25px;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.7);
-            text-align: center;
-        }
-        .gx-header h1 {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 22px;
-            letter-spacing: 5px;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .upload-zone {
-            background: #161b22;
-            border: 2px dashed #30363d;
-            border-radius: 30px;
-            padding: 60px 20px;
-            margin: 25px 0;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .upload-zone:hover { border-color: #58a6ff; background: #1c2128; }
-        
-        .btn-action {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            color: #000;
-            font-weight: 800;
-            padding: 16px;
-            border-radius: 18px;
-            width: 100%;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 1px;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-        .btn-outline {
-            background: #161b22;
-            color: #4facfe;
-            border: 1px solid #30363d;
-            font-weight: 700;
-            padding: 14px;
-            border-radius: 18px;
-            width: 100%;
-            font-size: 11px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        #previewContainer {
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
-            min-height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            border: 1px solid #222;
-        }
-        #outputImg { max-width: 100%; display: block; position: relative; z-index: 2; }
+        body { background: #02040a; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .gx-card { width: 100%; max-width: 420px; background: rgba(13, 17, 23, 0.95); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 40px; padding: 40px 25px; box-shadow: 0 0 50px rgba(0, 0, 0, 0.9); text-align: center; }
+        .gx-title { font-family: 'Syncopate', sans-serif; letter-spacing: 5px; background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .upload-box { border: 2px dashed rgba(0, 242, 254, 0.2); border-radius: 30px; padding: 60px 20px; cursor: pointer; transition: 0.3s; background: rgba(0, 198, 255, 0.02); }
+        .upload-box:hover { border-color: #00f2fe; background: rgba(0, 242, 254, 0.06); transform: translateY(-3px); }
+        .btn-download { background: linear-gradient(45deg, #00c6ff, #0072ff); color: white; font-weight: 800; padding: 18px; border-radius: 22px; width: 100%; margin-top: 15px; box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3); }
+        .btn-bg { background: #161b22; border: 1px solid #30363d; color: #4facfe; padding: 14px; border-radius: 20px; width: 100%; font-size: 11px; font-weight: 700; margin-top: 25px; }
+        #canvasContainer { position: relative; border-radius: 25px; overflow: hidden; width: 100%; min-height: 300px; background: #000; display: none; margin-bottom: 20px; }
+        #mainCanvas { width: 100%; height: auto; display: block; border-radius: 25px; }
     </style>
 </head>
 <body>
 
-    <div class="gx-wrapper">
-        <div class="gx-header">
-            <h1>GX REMOVE</h1>
-            <p class="text-[8px] text-gray-500 tracking-[4px] mt-1 font-bold uppercase">Pro Background Studio</p>
-        </div>
+    <div class="gx-card">
+        <h1 class="gx-title text-2xl mb-1">GX REMOVE</h1>
+        <p class="text-[8px] tracking-[5px] text-slate-500 uppercase font-bold mb-10">Premium HD Studio</p>
 
-        <div id="uploadBox" class="upload-zone" onclick="document.getElementById('imageInput').click()">
+        <div id="uploadArea" class="upload-box" onclick="document.getElementById('imageInput').click()">
             <input type="file" id="imageInput" class="hidden" accept="image/*">
-            <div class="text-4xl mb-3">🖼️</div>
-            <p class="text-sm font-bold text-gray-300">Upload Photo</p>
-            <p class="text-[9px] text-gray-600 mt-1 uppercase">Background will be removed</p>
+            <div class="text-5xl mb-4">💎</div>
+            <p class="text-sm font-bold text-slate-300 tracking-wide">Select High-Res Photo</p>
+            <p class="text-[9px] text-slate-600 mt-2 uppercase tracking-widest">AI Auto Background Remover</p>
         </div>
 
-        <div id="loader" class="hidden py-10">
-            <div class="w-10 h-10 border-4 border-gray-800 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
-            <p class="text-[10px] text-blue-400 mt-4 font-bold tracking-widest uppercase">AI Removing BG...</p>
+        <div id="loader" class="hidden py-14">
+            <div class="w-12 h-12 border-4 border-slate-800 border-t-cyan-500 rounded-full animate-spin mx-auto"></div>
+            <p class="text-[10px] text-cyan-500 mt-5 font-bold tracking-[3px] animate-pulse">PROCESSING HD FILE...</p>
         </div>
 
         <div id="resultArea" class="hidden">
-            <div id="previewContainer">
-                <img id="outputImg" src="">
+            <div id="canvasContainer">
+                <canvas id="mainCanvas"></canvas>
             </div>
 
-            <input type="file" id="bgInput" class="hidden" accept="image/*" onchange="applyCustomBG(event)">
+            <input type="file" id="bgInput" class="hidden" accept="image/*" onchange="loadBackground(event)">
             
-            <button onclick="document.getElementById('bgInput').click()" class="btn-outline">
-                📷 Add Custom Background
+            <button onclick="document.getElementById('bgInput').click()" class="btn-bg uppercase tracking-widest">
+                🖼️ Add Custom Background
             </button>
 
-            <button onclick="downloadImage()" class="btn-action">Download Result</button>
+            <button onclick="saveFinalImage()" class="btn-download uppercase tracking-widest text-xs">
+                Download HD Result
+            </button>
             
-            <button onclick="location.reload()" class="text-[9px] text-gray-600 mt-5 font-bold uppercase tracking-widest hover:text-white transition block mx-auto">
+            <button onclick="location.reload()" class="mt-6 text-[9px] text-slate-600 font-bold tracking-widest hover:text-white uppercase block mx-auto">
                 Upload New Photo
             </button>
         </div>
 
-        <p class="mt-8 text-[7px] text-gray-700 tracking-[2px] font-bold uppercase">Developer Sammim © 2026</p>
+        <p class="mt-10 text-[7px] text-slate-800 tracking-[3px] font-bold uppercase">Developed by Sammim</p>
     </div>
 
     <script>
         const API_KEY = "MMoS7GN2XD8zxXYw5s3ZZmHr";
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let fgImg = new Image();
+        let bgImg = new Image();
+        let isBgLoaded = false;
 
-        // ১. ছবি আপলোড ও ব্যাকগ্রাউন্ড রিমুভ
+        // ১. ছবি আপলোড ও রিমুভ
         document.getElementById('imageInput').onchange = async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            document.getElementById('uploadBox').classList.add('hidden');
+            document.getElementById('uploadArea').classList.add('hidden');
             document.getElementById('loader').classList.remove('hidden');
 
             const formData = new FormData();
@@ -154,41 +90,66 @@
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = URL.createObjectURL(blob);
-                    document.getElementById('outputImg').src = url;
-                    document.getElementById('loader').classList.add('hidden');
-                    document.getElementById('resultArea').classList.remove('hidden');
+                    
+                    fgImg.onload = () => {
+                        // ক্যানভাস সাইজ ঠিক করা
+                        canvas.width = fgImg.width;
+                        canvas.height = fgImg.height;
+                        drawCanvas();
+                        document.getElementById('loader').classList.add('hidden');
+                        document.getElementById('resultArea').classList.remove('hidden');
+                        document.getElementById('canvasContainer').style.display = 'block';
+                    };
+                    fgImg.src = url;
                 } else {
-                    alert("Credit finished or API Error!");
+                    alert("API ক্রেডিট শেষ বা ভুল হয়েছে!");
                     location.reload();
                 }
             } catch (err) {
-                alert("Network connection error.");
+                alert("ইন্টারনেট সমস্যা!");
                 location.reload();
             }
         };
 
-        // ২. গ্যালারি থেকে নতুন ব্যাকগ্রাউন্ড সেট করা
-        function applyCustomBG(event) {
+        // ২. কাস্টম ব্যাকগ্রাউন্ড লোড করা
+        function loadBackground(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewContainer').style.backgroundImage = `url('${e.target.result}')`;
-                }
+                reader.onload = (e) => {
+                    bgImg.onload = () => {
+                        isBgLoaded = true;
+                        drawCanvas();
+                    };
+                    bgImg.src = e.target.result;
+                };
                 reader.readAsDataURL(file);
             }
         }
 
-        // ৩. ডাউনলোড (ব্যাকগ্রাউন্ডসহ ডাউনলোড করার সহজ পদ্ধতি)
-        function downloadImage() {
-            const imgUrl = document.getElementById('outputImg').src;
-            const a = document.createElement('a');
-            a.href = imgUrl;
-            a.download = "GX_PRO_EDIT.png";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            alert("নোট: গ্যালারি থেকে যুক্ত করা ব্যাকগ্রাউন্ডসহ সেভ করতে হলে ছবির ওপর লং প্রেস করে 'Download Image' দিন।");
+        // ৩. ক্যানভাসে ছবি আঁকা (জোড়া লাগানো)
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (isBgLoaded) {
+                // ব্যাকগ্রাউন্ড ছবিকে ক্যানভাসের সাইজে ড্র করা
+                ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+            } else {
+                // কোনো ব্যাকগ্রাউন্ড না থাকলে সাদা ব্যাকগ্রাউন্ড (ঐচ্ছিক)
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // রিমুভ করা ছবিকে উপরে ড্র করা
+            ctx.drawImage(fgImg, 0, 0, canvas.width, canvas.height);
+        }
+
+        // ৪. ফাইনাল এইচডি ডাউনলোড
+        function saveFinalImage() {
+            const link = document.createElement('a');
+            link.download = `GX_PRO_HD_${Date.now()}.png`;
+            link.href = canvas.toDataURL("image/png", 1.0); // ১০০% কোয়ালিটি
+            link.click();
         }
     </script>
 </body>
